@@ -13,7 +13,7 @@ from djoser.views import UserViewSet
 from recipes.models import (Favorite, Ingredient, RecipeIngredient, Recipe,
                             Cart, Tag)
 from users.models import Follow, User
-from .filters import IngredientsSearchFilter, RecipeFilter
+from .filters import IngredientsSearchFilter, RecipeFilter, IngredientFilter
 from .pagination import LimitPageNumberPagination
 from .permissions import AdminOrReadOnly, AuthorOrModeratorOrAdmin
 from .serializers import (IngredientSerializer,
@@ -33,16 +33,12 @@ class TagsViewSet(ReadOnlyModelViewSet):
     serializer_class = TagSerializer
 
 
-class IngredientsViewSet(ReadOnlyModelViewSet):
-    """
-    ViewSet для работы с ингредиентами.
-    Добавить ингредиент может администратор.
-    """
+class IngredientViewSet(ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
-    permission_classes = (AdminOrReadOnly, )
     serializer_class = IngredientSerializer
-    filter_backends = [IngredientsSearchFilter]
-    search_fields = ('^name',)
+    permission_classes = (AdminOrReadOnly,)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = IngredientFilter
 
 
 class RecipeViewSet(ModelViewSet):
@@ -57,7 +53,7 @@ class RecipeViewSet(ModelViewSet):
     pagination_class = LimitPageNumberPagination
 
     def get_serializer_class(self):
-        if self.action in ('list', 'retrieve'):
+        if self.request.method in SAFE_METHODS:
             return RecipeReadSerializer
         return RecipeWriteSerializer
 
