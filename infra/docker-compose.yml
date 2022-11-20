@@ -1,4 +1,5 @@
 version: '3.3'
+
 services:
 
   db:
@@ -10,9 +11,7 @@ services:
       - ./.env
 
   backend:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
+    image: redbull7214/foodgram_backend:latest
     restart: always
     volumes:
       - static_value:/app/static/
@@ -24,9 +23,7 @@ services:
       - ./.env
 
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: redbull7214/foodgram_frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
 
