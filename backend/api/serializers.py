@@ -5,7 +5,7 @@ from recipes.models import (Favorite, Ingredient, RecipeIngredient, Recipe,
                             Cart, Tag)
 from users.models import User, Follow
 from djoser.serializers import UserCreateSerializer, UserSerializer
-
+from rest_framework.relations import PrimaryKeyRelatedField
 class TagSerializer(serializers.ModelSerializer):
     """
     Сериализатор для тегов
@@ -41,7 +41,7 @@ class AddIngredientSerializer(serializers.ModelSerializer):
     """
     Сериализатор для добавления Ингредиентов
     """
-    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+    id = PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
     amount = serializers.IntegerField()
 
     class Meta:
@@ -178,7 +178,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     """
     Сериализатор для добавления рецептов
     """
-    tags = serializers.PrimaryKeyRelatedField(
+    tags = PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True)
     ingredients = AddIngredientSerializer(many=True)
     author = CustomUserSerializer(read_only=True)
