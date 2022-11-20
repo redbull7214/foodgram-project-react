@@ -11,7 +11,7 @@ services:
       - ./.env
 
   backend:
-    image: redbull7214/foodgram_backend:latest
+    image: redbull7214/foodgram_backend:v1.4
     restart: always
     volumes:
       - static_value:/app/static/
@@ -23,7 +23,7 @@ services:
       - ./.env
 
   frontend:
-    image: redbull7214/foodgram_frontend:latest
+    image: redbull7214/foodgram_frontend:v1.4
     volumes:
       - ../frontend/:/app/result_build/
 
