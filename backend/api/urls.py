@@ -3,12 +3,12 @@ from rest_framework.routers import DefaultRouter
 
 from .views import CustomUserViewSet, FollowListView, FollowViewSet
 from djoser.views import TokenCreateView
-from .views import IngredientViewSet, RecipeViewSet, TagsViewSet
+from .views import IngredientsViewSet, RecipeViewSet, TagsViewSet
 
 app_name = 'api'
 router = DefaultRouter()
 router.register('recipes', RecipeViewSet, basename='recipes')
-router.register('ingredients', IngredientViewSet, basename='ingredients')
+router.register('ingredients', IngredientsViewSet, basename='ingredients')
 router.register('tags', TagsViewSet, basename='tags')
 router.register('users', CustomUserViewSet, basename='users')
 
