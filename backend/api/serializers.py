@@ -209,7 +209,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         tags = data['tags']
         if not tags:
             raise serializers.ValidationError({
-                'tags': 'Нужно выбрать хотя бы один тэг!'
+                'tags': 'Нужно выбрать хотя бы один тэг!!'
             })
         tags_list = []
         for tag in tags:
