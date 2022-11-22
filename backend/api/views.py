@@ -77,16 +77,15 @@ class RecipeViewSet(ModelViewSet):
         model_obj.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=["POST"],
-            permission_classes=[IsAuthenticated])
+    @action(
+        detail=True,
+        methods=('post', 'delete'),
+        permission_classes=(IsAuthenticated,)
+    )
     def favorite(self, request, pk):
-        return self.post_method_for_actions(
-            request=request, pk=pk, serializers=FavoriteSerializer)
-
-    @favorite.mapping.delete
-    def delete_favorite(self, request, pk):
-        return self.delete_method_for_actions(
-            request=request, pk=pk, model=Favorite)
+        if request.method == 'POST':
+            return self.add_to(Favorite, request.user, pk)
+        return self.delete_from(Favorite, request.user, pk)
 
     @action(detail=True, methods=["POST"],
             permission_classes=[IsAuthenticated])

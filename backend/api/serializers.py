@@ -273,28 +273,28 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
-class FavoriteSerializer(serializers.ModelSerializer):
-    """
-    Сериализатор для списка избранного
-    """
-    id = serializers.ReadOnlyField(source='recipe.id')
-    name = serializers.ReadOnlyField(source='recipe.name')
-    cooking_time = serializers.ReadOnlyField(source='recipe.cooking_time')
+# class FavoriteSerializer(serializers.ModelSerializer):
+#     """
+#     Сериализатор для списка избранного
+#     """
+#     id = serializers.ReadOnlyField(source='recipe.id')
+#     name = serializers.ReadOnlyField(source='recipe.name')
+#     cooking_time = serializers.ReadOnlyField(source='recipe.cooking_time')
 
-    class Meta:
-        model = Favorite
-        fields = ['id', 'name', 'cooking_time']
+#     class Meta:
+#         model = Favorite
+#         fields = ['id', 'name', 'cooking_time']
 
-    def validate(self, data):
+#     def validate(self, data):
         
        
-        recipe_id = data['recipe'].id
-        user_id = data['user'].id
-        if Favorite.objects.filter(recipe=recipe_id, user=user_id).exists():
-            raise serializers.ValidationError(
-                detail='The recipe is already in the favorite list'
-            )
-        return 
+#         recipe_id = data['recipe'].id
+#         user_id = data['user'].id
+#         if Favorite.objects.filter(recipe=recipe_id, user=user_id).exists():
+#             raise serializers.ValidationError(
+#                 detail='The recipe is already in the favorite list'
+#             )
+#         return 
 
 
 
