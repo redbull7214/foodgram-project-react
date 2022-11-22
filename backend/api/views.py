@@ -61,21 +61,37 @@ class RecipeViewSet(ModelViewSet):
             return RecipeReadSerializer
         return RecipeWriteSerializer
 
-    @staticmethod
-    def post_method_for_actions(request, pk, serializers):
-        data = {'user': request.user.id, 'recipe': pk}
-        serializer = serializers(data=data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+    def add_to(self, model, user, pk):
+        if model.objects.filter(user=user, recipe__id=pk).exists():
+            return Response({'errors': 'Рецепт уже добавлен!'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        recipe = get_object_or_404(Recipe, id=pk)
+        model.objects.create(user=user, recipe=recipe)
+        serializer = ShortRecipeSerializer(recipe)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @staticmethod
-    def delete_method_for_actions(request, pk, model):
-        user = request.user
-        recipe = get_object_or_404(Recipe, id=pk)
-        model_obj = get_object_or_404(model, user=user, recipe=recipe)
-        model_obj.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete_from(self, model, user, pk):
+        obj = model.objects.filter(user=user, recipe__id=pk)
+        if obj.exists():
+            obj.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({'errors': 'Рецепт уже удален!'},
+                        status=status.HTTP_400_BAD_REQUEST)
+    # @staticmethod
+    # def post_method_for_actions(request, pk, serializers):
+    #     data = {'user': request.user.id, 'recipe': pk}
+    #     serializer = serializers(data=data, context={'request': request})
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    # @staticmethod
+    # def delete_method_for_actions(request, pk, model):
+    #     user = request.user
+    #     recipe = get_object_or_404(Recipe, id=pk)
+    #     model_obj = get_object_or_404(model, user=user, recipe=recipe)
+    #     model_obj.delete()
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=True,
@@ -87,16 +103,15 @@ class RecipeViewSet(ModelViewSet):
             return self.add_to(Favorite, request.user, pk)
         return self.delete_from(Favorite, request.user, pk)
 
-    @action(detail=True, methods=["POST"],
-            permission_classes=[IsAuthenticated])
+    @action(
+        detail=True,
+        methods=('post', 'delete'),
+        permission_classes=(IsAuthenticated,)
+    )
     def shopping_cart(self, request, pk):
-        return self.post_method_for_actions(
-            request=request, pk=pk, serializers=ShoppingCartSerializer)
-
-    @shopping_cart.mapping.delete
-    def delete_shopping_cart(self, request, pk):
-        return self.delete_method_for_actions(
-            request=request, pk=pk, model=Cart)
+        if request.method == 'POST':
+            return self.add_to(Cart, request.user, pk)
+        return self.delete_from(Cart, request.user, pk)
 
     @action(detail=False, methods=['get'],
             permission_classes=[IsAuthenticated])
