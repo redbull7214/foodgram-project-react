@@ -60,31 +60,7 @@ class RecipeViewSet(ModelViewSet):
         if self.action in ('list', 'retrieve'):
             return RecipeReadSerializer
         return RecipeWriteSerializer
-    @action(
-        detail=True,
-        methods=('post', 'delete'),
-        permission_classes=(IsAuthenticated,)
-    )
-    def favorite(self, request, pk):
-        if request.method == 'POST':
-            return self.add_to(Favorite, request.user, pk)
-        return self.delete_from(Favorite, request.user, pk)
-    def add_to(self, model, user, pk):
-        if model.objects.filter(user=user, recipe__id=pk).exists():
-            return Response({'errors': 'Рецепт уже добавлен!'},
-                            status=status.HTTP_400_BAD_REQUEST)
-        recipe = get_object_or_404(Recipe, id=pk)
-        model.objects.create(user=user, recipe=recipe)
-        serializer = ShortRecipeSerializer(recipe)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def delete_from(self, model, user, pk):
-        obj = model.objects.filter(user=user, recipe__id=pk)
-        if obj.exists():
-            obj.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response({'errors': 'Рецепт уже удален!'},
-                        status=status.HTTP_400_BAD_REQUEST)
+   
     # @staticmethod
     # def post_method_for_actions(request, pk, serializers):
     #     data = {'user': request.user.id, 'recipe': pk}
@@ -105,13 +81,81 @@ class RecipeViewSet(ModelViewSet):
 
     @action(
         detail=True,
-        methods=('post', 'delete'),
-        permission_classes=(IsAuthenticated,)
+        methods=['POST', 'DELETE'],
+        url_path='shopping_cart',
+        permission_classes=[IsAuthenticatedOrReadOnly],
     )
-    def shopping_cart(self, request, pk):
+    def shopping_cart(self, request, pk=None):
+        user = request.user
+        recipe = get_object_or_404(Recipe, id=pk)
+
+        cart = Cart.objects.filter(
+            author=user,
+            recipe=recipe
+        )
+
         if request.method == 'POST':
-            return self.add_to(Cart, request.user, pk)
-        return self.delete_from(Cart, request.user, pk)
+
+            if cart.exists():
+                error = {
+                    'errors': ('You cannot add a prescription to the '
+                               'shopping list again.')
+                }
+                return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+            Cart(
+                author=user,
+                recipe=recipe
+            ).save()
+            serializer = ShortRecipeSerializer(recipe)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        if not cart.exists():
+            error = {
+                'errors':
+                    'This recipe is not on your shopping list.'
+            }
+            return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+        cart.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(
+        detail=True,
+        methods=['POST', 'DELETE'],
+        url_path='favorite',
+        permission_classes=[IsAuthenticatedOrReadOnly],
+    )
+    def favorite(self, request, pk=None):
+        user = request.user
+        recipe = get_object_or_404(Recipe, id=pk)
+
+        favorite = Favorite.objects.filter(
+            author=user,
+            recipe=recipe
+        )
+
+        if request.method == 'POST':
+
+            if favorite.exists():
+                error = {
+                    'errors': 'You can not add a recipe to favorites again.'
+                }
+                return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+            Favorite(
+                author=user,
+                recipe=recipe
+            ).save()
+            serializer = ShortRecipeSerializer(recipe)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        if not favorite.exists():
+            error = {'errors': 'This recipe is not in your favorites.'}
+            return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+        favorite.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get'],
             permission_classes=[IsAuthenticated])
