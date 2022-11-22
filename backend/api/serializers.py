@@ -271,9 +271,13 @@ class FavoriteSerializer(serializers.ModelSerializer):
     """
     Сериализатор для списка избранного
     """
+    id = serializers.ReadOnlyField(source='recipe.id')
+    name = serializers.ReadOnlyField(source='recipe.name')
+    cooking_time = serializers.ReadOnlyField(source='recipe.cooking_time')
+
     class Meta:
         model = Favorite
-        fields = ('user', 'recipe')
+        fields = ['id', 'name', 'cooking_time']
 
     def validate(self, data):
         request = self.context.get('request')
@@ -286,12 +290,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
             })
         return data
 
-    def to_representation(self, instance):
-        request = self.context.get('request')
-        context = {'request': request}
-        return ShortRecipeSerializer(
-            instance.recipe, context=context).data
-
+    
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
     """

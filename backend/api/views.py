@@ -239,3 +239,31 @@ class FollowListView(ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return Follow.objects.filter(user=user)
+
+
+
+class FavoriteViewSet(CartFavoriteBaseViewSet):
+    """
+    Обработка списка избанных рецептов.
+    """
+    queryset = Favorite.objects.all()
+    serializer_class = FavoriteSerializer
+    permission_classes = [IsAuthenticated]
+
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        recipe_id = self.kwargs.get('recipe_id')
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+        serializer.save(recipe=recipe, user=user)
+
+    def delete(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        recipe_id = self.kwargs.get('recipe_id')
+        object = get_object_or_404(
+            queryset,
+            recipe=recipe_id,
+            user=self.request.user
+        )
+        self.perform_destroy(object)
+        return Response(status=status.HTTP_204_NO_CONTENT)
