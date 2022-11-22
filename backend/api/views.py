@@ -237,4 +237,14 @@ class FollowListView(ListAPIView):
     pagination_class = LimitPageNumberPagination
 
     def get_queryset(self, request):
-        return Follow.objects.filter(user=request.user)
+        
+        
+        pages = self.paginate_queryset(
+            Follow.objects.filter(user=request.user)
+        )
+
+        serializer = FollowSerializer(
+            pages, many=True, context={'request': request}
+        )
+
+        return self.get_paginated_response(serializer.data)
