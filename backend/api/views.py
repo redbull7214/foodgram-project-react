@@ -242,7 +242,7 @@ class FollowListView(ListAPIView):
 
 
 
-class FavoriteViewSet(CartFavoriteBaseViewSet):
+class FavoriteViewSet(ModelViewSet):
     """
     Обработка списка избанных рецептов.
     """
