@@ -236,7 +236,7 @@ class FollowListView(ListAPIView):
     permission_classes = [IsAuthenticated]
     pagination_class = LimitPageNumberPagination
 
-    def get_queryset(self, request):
+    def subscriptions(self, request):
         
         
         pages = self.paginate_queryset(
