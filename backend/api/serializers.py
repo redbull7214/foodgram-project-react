@@ -286,13 +286,19 @@ class FavoriteSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'cooking_time']
 
     def validate(self, data):
-        recipe_id = int(self.get('view').kwargs['recipe_id'])
-        user_id = self.get('request').user.id
+        
+        recipe_id = int(self.context.get('view').kwargs['recipe_id'])
+        user_id = self.context.get('request').user.id
         if Favorite.objects.filter(recipe=recipe_id, user=user_id).exists():
             raise serializers.ValidationError(
                 detail='The recipe is already in the favorite list'
             )
-        return data
+        return 
+
+
+
+
+   
 
     
 
