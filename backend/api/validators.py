@@ -1,7 +1,6 @@
-import datetime as dt
 import re
-from django.core.exceptions import ValidationError
 from rest_framework import serializers
+
 
 def validate_username(value):
     if value.lower() == 'me':

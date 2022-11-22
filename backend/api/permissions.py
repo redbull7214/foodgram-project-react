@@ -2,7 +2,6 @@ from rest_framework import permissions
 
 
 class AdminOrReadOnly(permissions.BasePermission):
-    message = 'You must have admin rights to perform this action.'
 
     def has_permission(self, request, view):
         return ((request.method in permissions.SAFE_METHODS)

@@ -1,18 +1,14 @@
 import csv
 import os
-
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
-
 from recipes.models import Ingredient
 
 DATA_ROOT = os.path.join(settings.BASE_DIR, 'data')
 
 
 class Command(BaseCommand):
-    """
-    Добавляем ингредиенты из файла CSV
-    """
+    """Импорт ингредиентов из CSV"""
     help = 'loading ingredients from data in json or csv'
 
     def add_arguments(self, parser):

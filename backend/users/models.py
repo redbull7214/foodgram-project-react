@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
 class User(AbstractUser):
     USER = 'user'
     MODERATOR = 'moderator'
@@ -14,7 +15,7 @@ class User(AbstractUser):
     email = models.EmailField(
         'Адрес электронной почты',
         max_length=254,
-        unique=True,        
+        unique=True,
     )
     username = models.CharField(
         'Имя пользователя',
@@ -41,7 +42,6 @@ class User(AbstractUser):
         help_text=('Введите пароль'),
     )
 
-
     class Meta:
         ordering = ('id',)
         verbose_name = 'Пользователь'
@@ -57,7 +57,7 @@ class User(AbstractUser):
     @property
     def access_administrator(self):
         return self.role == self.ADMIN or self.is_superuser
-        
+
 
 class Follow(models.Model):
     user = models.ForeignKey(

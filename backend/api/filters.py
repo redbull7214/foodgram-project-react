@@ -4,7 +4,7 @@ from recipes.models import Recipe
 
 
 class RecipeFilter(filters.FilterSet):
-
+    """Фильтр для рецептов"""
     is_favorited = filters.BooleanFilter(
         method='get_favorite',
         label='favorite',
@@ -37,5 +37,7 @@ class RecipeFilter(filters.FilterSet):
             return queryset.filter(cart__user=self.request.user)
         return queryset
 
+
 class IngredientsSearchFilter(SearchFilter):
+    """Фильтр для поиска ингредиентов"""
     search_param = 'name'

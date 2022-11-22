@@ -3,6 +3,7 @@ from django.core.validators import MinValueValidator
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
+
 class Ingredient(models.Model):
     name = models.CharField(
         'Название',
@@ -12,9 +13,10 @@ class Ingredient(models.Model):
         'Единица измерения',
         max_length=200,
     )
+
     class Meta:
-        # verbose_name = 'Ингридиент'
-        # verbose_name_plural = 'Ингридиенты'
+        verbose_name = 'Ингридиент'
+        verbose_name_plural = 'Ингридиенты'
         ordering = ['name']
         constraints = [
             models.UniqueConstraint(fields=['name', 'measurement_unit'],
@@ -22,6 +24,7 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Tag(models.Model):
     name = models.CharField(
@@ -42,17 +45,18 @@ class Tag(models.Model):
 
     class Meta:
         ordering = ['-id']
-        # verbose_name = 'Тег'
-        # verbose_name_plural = 'Теги'
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
 
     def __str__(self):
         return self.name
 
+
 class Recipe(models.Model):
     tags = models.ManyToManyField(
-        Tag, 
+        Tag,
         related_name='recipes',
-        verbose_name='Тег', 
+        verbose_name='Тег',
     )
     author = models.ForeignKey(
         User,
@@ -68,11 +72,11 @@ class Recipe(models.Model):
         verbose_name='Ингредиенты',
     )
     name = models.CharField(
-        'Название', 
+        'Название',
         max_length=200
     )
     image = models.ImageField(
-        'Картинка', 
+        'Картинка',
         upload_to='images/',
         null=True,
         blank=True
@@ -80,26 +84,26 @@ class Recipe(models.Model):
     text = models.TextField(
         'Описание рецепта'
     )
-        
+
     cooking_time = models.PositiveSmallIntegerField(
         'Время приготовления',
         validators=[MinValueValidator(
-            1, message='Минимальное время приготовления не меньше 1-ой минуты'),
+            1, message='Минимальное время приготовления 1 минута'),
         ]
     )
     pub_date = models.DateTimeField(
-        'Дата публикации', 
+        'Дата публикации',
         auto_now_add=True
     )
 
     class Meta:
         ordering = ['-pub_date']
-        # verbose_name = 'Рецепт'
-        # verbose_name_plural = 'Рецепты'
-        
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
 
     def __str__(self):
         return self.name
+
 
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(
@@ -123,14 +127,15 @@ class RecipeIngredient(models.Model):
 
     class Meta:
         ordering = ['-id']
-        # verbose_name = 'Количество ингридиента'
-        # verbose_name_plural = 'Количество ингридиентов'
+        verbose_name = 'Количество ингридиента'
+        verbose_name_plural = 'Количество ингридиентов'
         constraints = [
             models.UniqueConstraint(
                 fields=('ingredient', 'recipe',),
                 name='unique_recipe_ingredients'
             )
         ]
+
 
 class Cart(models.Model):
     user = models.ForeignKey(
@@ -148,8 +153,8 @@ class Cart(models.Model):
 
     class Meta:
         ordering = ['-id']
-        # verbose_name = 'Корзина'
-        # verbose_name_plural = 'В корзине'
+        verbose_name = 'Корзина'
+        verbose_name_plural = 'В корзине'
         constraints = [
             models.UniqueConstraint(
                 fields=('user', 'recipe',),
@@ -174,8 +179,8 @@ class Favorite(models.Model):
 
     class Meta:
         ordering = ['-id']
-        # verbose_name = 'Избранное'
-        # verbose_name_plural = 'Избранные'
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранные'
         constraints = [
             models.UniqueConstraint(
                 fields=('user', 'recipe',),

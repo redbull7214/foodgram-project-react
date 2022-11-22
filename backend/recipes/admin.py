@@ -7,7 +7,7 @@ from .models import Cart, Favorite, Ingredient, RecipeIngredient, Recipe, Tag
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'measurement_unit')
     list_filter = ('name',)
-    
+
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
@@ -19,9 +19,11 @@ class RecipeAdmin(admin.ModelAdmin):
 
     count_favorites.short_description = 'Число добавлений в избранное'
 
+
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     pass
+
 
 @admin.register(RecipeIngredient)
 class RecipeIngredientAdmin(admin.ModelAdmin):
