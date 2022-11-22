@@ -60,7 +60,15 @@ class RecipeViewSet(ModelViewSet):
         if self.action in ('list', 'retrieve'):
             return RecipeReadSerializer
         return RecipeWriteSerializer
-
+    @action(
+        detail=True,
+        methods=('post', 'delete'),
+        permission_classes=(IsAuthenticated,)
+    )
+    def favorite(self, request, pk):
+        if request.method == 'POST':
+            return self.add_to(Favorite, request.user, pk)
+        return self.delete_from(Favorite, request.user, pk)
     def add_to(self, model, user, pk):
         if model.objects.filter(user=user, recipe__id=pk).exists():
             return Response({'errors': 'Рецепт уже добавлен!'},
@@ -93,15 +101,7 @@ class RecipeViewSet(ModelViewSet):
     #     model_obj.delete()
     #     return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(
-        detail=True,
-        methods=('post', 'delete'),
-        permission_classes=(IsAuthenticated,)
-    )
-    def favorite(self, request, pk):
-        if request.method == 'POST':
-            return self.add_to(Favorite, request.user, pk)
-        return self.delete_from(Favorite, request.user, pk)
+    
 
     @action(
         detail=True,
