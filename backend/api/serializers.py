@@ -146,13 +146,13 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 class FollowSerializer(CustomUserSerializer):
     """Сериализатор подписок"""
-
+    email = serializers.ReadOnlyField(source='author.email') 
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
 
     class Meta(CustomUserSerializer.Meta):
         fields = CustomUserSerializer.Meta.fields + (
-            'recipes_count', 'recipes')
+            'recipes_count', 'recipes', 'email')
 
     def get_is_subscribed(self, obj):
         return Follow.objects.filter(
