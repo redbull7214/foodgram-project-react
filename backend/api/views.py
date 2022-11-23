@@ -112,9 +112,11 @@ class RecipeViewSet(ModelViewSet):
         page.setFont('Lemon', size=16)
         height = 750
         for value in ingredients:
-            page.drawString(75, height, (value['ingredient__name'] + ' - '
-                                         + str(value['amount']) + ' '
-                                         + value['ingredient__measurement_unit']))
+            page.drawString(75, height, (
+                value['ingredient__name'] + ' - '
+                + str(value['amount']) + ' '
+                + value['ingredient__measurement_unit']
+            ))
             height -= 25
         page.showPage()
         page.save()
