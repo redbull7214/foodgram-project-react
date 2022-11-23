@@ -146,7 +146,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 class FollowSerializer(CustomUserSerializer):
     """Сериализатор подписок"""
-    email = serializers.ReadOnlyField(source='author.email') 
+    email = serializers.ReadOnlyField(source='author.email')
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
 
