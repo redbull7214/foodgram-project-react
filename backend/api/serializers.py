@@ -133,47 +133,22 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         user = self.context['request'].user
-        return (
-            1 if user.is_authenticated
-            and Favorite.objects.filter(
-                recipe=obj, user=user
-            ).exists() else 0
-        )
+        return (user.is_authenticated and Favorite.objects.filter(recipe=obj, user=user).exists())
 
     def get_is_in_shopping_cart(self, obj):
         user = self.context['request'].user
-        return (
-            1 if user.is_authenticated
-            and Cart.objects.filter(
-                recipe=obj,
-                user=user
-            ).exists() else 0
-        )
+        return (user.is_authenticated and Cart.objects.filter(recipe=obj, user=user).exists())
 
 
-class FollowSerializer(serializers.ModelSerializer):
+class FollowSerializer(CustomUserSerializer):
     """Сериализатор подписок"""
-    id = serializers.ReadOnlyField(source='author.id')
-    email = serializers.ReadOnlyField(source='author.email')
-    username = serializers.ReadOnlyField(source='author.username')
-    first_name = serializers.ReadOnlyField(source='author.first_name')
-    last_name = serializers.ReadOnlyField(source='author.last_name')
-    is_subscribed = serializers.SerializerMethodField()
+    
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
 
-    class Meta:
-        model = Follow
-        fields = (
-            'id',
-            'email',
-            'username',
-            'first_name',
-            'last_name',
-            'is_subscribed',
-            'recipes',
-            'recipes_count'
-        )
+    class Meta(CustomUserSerializer.Meta):
+        fields = CustomUserSerializer.Meta.fields + (
+            'recipes_count', 'recipes')
 
     def get_is_subscribed(self, obj):
         return Follow.objects.filter(
