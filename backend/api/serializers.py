@@ -4,7 +4,6 @@ from recipes.models import (Favorite, Ingredient, RecipeIngredient, Recipe,
                             Cart, Tag)
 from users.models import User, Follow
 from djoser.serializers import UserCreateSerializer, UserSerializer
-from rest_framework.exceptions import ValidationError
 
 
 class TagSerializer(serializers.ModelSerializer):
