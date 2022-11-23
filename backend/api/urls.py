@@ -4,11 +4,11 @@ from .views import CustomUserViewSet, FollowListView, FollowViewSet
 from .views import IngredientsViewSet, RecipeViewSet, TagsViewSet
 
 app_name = 'api'
-router = DefaultRouter()
-router.register('recipes', RecipeViewSet, basename='recipes')
-router.register('ingredients', IngredientsViewSet, basename='ingredients')
-router.register('tags', TagsViewSet, basename='tags')
-router.register('users', CustomUserViewSet, basename='users')
+router_v1 = DefaultRouter()
+router_v1.register('recipes', RecipeViewSet, basename='recipes')
+router_v1.register('ingredients', IngredientsViewSet, basename='ingredients')
+router_v1.register('tags', TagsViewSet, basename='tags')
+router_v1.register('users', CustomUserViewSet, basename='users')
 
 urlpatterns = [
 
@@ -22,7 +22,7 @@ urlpatterns = [
         FollowViewSet.as_view(),
         name='subscribe'
     ),
-    path('', include(router.urls)),
+    path('', include(router_v1.urls)),
     path('', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
 ]

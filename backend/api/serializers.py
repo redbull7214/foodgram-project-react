@@ -188,7 +188,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             'cooking_time'
         )
 
-    def validate(self, data):
+    def validate_ingredients(self, data):
         ingredients = data['ingredients']
         ingredients_list = []
         for ingredient in ingredients:
@@ -204,6 +204,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                     'amount': 'Нужно добавить хотя-бы один ингредиент'
                 })
 
+    def validate_tags(self, data):
         tags = data['tags']
         if not tags:
             raise serializers.ValidationError({
@@ -217,6 +218,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 })
             tags_list.append(tag)
 
+    def validate_cooking_time(self, data):
         cooking_time = data['cooking_time']
         if int(cooking_time) <= 0:
             raise serializers.ValidationError({

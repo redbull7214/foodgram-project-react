@@ -22,6 +22,7 @@ from .serializers import (IngredientSerializer,
                           RecipeReadSerializer, RecipeWriteSerializer,
                           TagSerializer, FollowSerializer,
                           CustomUserSerializer, ShortRecipeSerializer)
+from django.db.models import Sum
 
 
 class TagsViewSet(ReadOnlyModelViewSet):
@@ -93,21 +94,13 @@ class RecipeViewSet(ModelViewSet):
     @action(detail=False, methods=['get'],
             permission_classes=[IsAuthenticated])
     def download_shopping_cart(self, request):
-        final_list = {}
+
         ingredients = RecipeIngredient.objects.filter(
-            recipe__cart__user=request.user).values_list(
-            'ingredient__name', 'ingredient__measurement_unit',
-            'amount'
+            recipe__cart__user=request.user).values(
+                'ingredient__name', 'ingredient__measurement_unit').annotate(
+                    amount=Sum('amount')
         )
-        for item in ingredients:
-            name = item[0]
-            if name not in final_list:
-                final_list[name] = {
-                    'measurement_unit': item[1],
-                    'amount': item[2]
-                }
-            else:
-                final_list[name]['amount'] += item[2]
+
         pdfmetrics.registerFont(
             TTFont('Lemon', 'data/Lemon.ttf', 'UTF-8'))
         response = HttpResponse(content_type='application/pdf')
@@ -118,9 +111,10 @@ class RecipeViewSet(ModelViewSet):
         page.drawString(200, 800, 'Список покупок')
         page.setFont('Lemon', size=16)
         height = 750
-        for i, (name, data) in enumerate(final_list.items(), 1):
-            page.drawString(75, height, (f'{i}. {name} - {data["amount"]} '
-                                         f'{data["measurement_unit"]}'))
+        for value in ingredients:
+            page.drawString(75, height, (value['ingredient__name'] + ' - '
+                                         + str(value['amount__sum']) + ' '
+                                         + value['ingredient__measurement_unit']))
             height -= 25
         page.showPage()
         page.save()
