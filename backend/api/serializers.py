@@ -4,6 +4,7 @@ from recipes.models import (Favorite, Ingredient, RecipeIngredient, Recipe,
                             Cart, Tag)
 from users.models import User, Follow
 from djoser.serializers import UserCreateSerializer, UserSerializer
+from rest_framework.exceptions import ValidationError
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -153,23 +154,32 @@ class FollowSerializer(CustomUserSerializer):
     class Meta(CustomUserSerializer.Meta):
         fields = CustomUserSerializer.Meta.fields + (
             'recipes_count', 'recipes')
-        read_only_fields = ('email', 'username')
 
-    def get_is_subscribed(self, obj):
-        return Follow.objects.filter(
-            user=obj.user, author=obj.author
-        ).exists()
+    def validate(self, data):
+        author = self.instance
+        user = self.context.get('request').user
+        if Follow.objects.filter(author=author, user=user).exists():
+            raise ValidationError(
+                detail='Вы уже подписаны на этого пользователя!',
+            )
+        if user == author:
+            raise ValidationError(
+                detail='Вы не можете подписаться на самого себя!',
+            )
+        return data
+
+    def get_recipes_count(self, obj):
+        return obj.recipes.count()
 
     def get_recipes(self, obj):
         request = self.context.get('request')
         limit = request.GET.get('recipes_limit')
-        queryset = Recipe.objects.filter(author=obj.author)
-        if limit:
-            queryset = queryset[:int(limit)]
-        return ShortRecipeSerializer(queryset, many=True).data
+        recipes = obj.recipes.all()
 
-    def get_recipes_count(self, obj):
-        return Recipe.objects.filter(author=obj.author).count()
+        if limit:
+            recipes = recipes[:int(limit)]
+        serializer = ShortRecipeSerializer(recipes, many=True, read_only=True)
+        return serializer.data
 
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
