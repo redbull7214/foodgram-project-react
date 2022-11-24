@@ -26,14 +26,18 @@ from django.db.models import Sum
 
 
 class TagsViewSet(ReadOnlyModelViewSet):
-    """Вьюсет для тегов"""
+    """
+    Вьюсет для тегов.
+    """
     queryset = Tag.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = TagSerializer
 
 
 class IngredientsViewSet(ReadOnlyModelViewSet):
-    """Вьюсет для ингредиентов"""
+    """
+    Вьюсет для ингредиентов.
+    """
     queryset = Ingredient.objects.all()
     permission_classes = (AdminOrReadOnly, )
     serializer_class = IngredientSerializer
@@ -42,7 +46,9 @@ class IngredientsViewSet(ReadOnlyModelViewSet):
 
 
 class RecipeViewSet(ModelViewSet):
-    """Вьюсет для рецептов"""
+    """
+    Вьюсет для рецептов.
+    """
     queryset = Recipe.objects.all()
     permission_classes = [AuthorOrModeratorOrAdmin]
     filter_backends = [DjangoFilterBackend]
@@ -124,14 +130,18 @@ class RecipeViewSet(ModelViewSet):
 
 
 class CustomUserViewSet(UserViewSet):
-    """Вьюсет для пользователей"""
+    """
+    ьюсет для пользователей.
+    """
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [AllowAny]
 
 
 class FollowViewSet(APIView):
-    """Вьюсет для подписок"""
+    """
+    Вьюсет для подписок.
+    """
     serializer_class = FollowSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = LimitPageNumberPagination
@@ -178,7 +188,9 @@ class FollowViewSet(APIView):
 
 
 class FollowListView(ListAPIView):
-    """Вьюсет для отображения подписок"""
+    """
+    Вьюсет для отображения подписок.
+    """
     serializer_class = FollowSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = LimitPageNumberPagination

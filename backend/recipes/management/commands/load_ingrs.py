@@ -8,7 +8,9 @@ DATA_ROOT = os.path.join(settings.BASE_DIR, 'data')
 
 
 class Command(BaseCommand):
-    """Импорт ингредиентов из CSV"""
+    """
+    Импорт ингредиентов из CSV.
+    """
     help = 'loading ingredients from data in json or csv'
 
     def add_arguments(self, parser):
