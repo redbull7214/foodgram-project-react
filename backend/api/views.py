@@ -1,6 +1,5 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -105,10 +104,8 @@ class RecipeViewSet(ModelViewSet):
                 'ingredient__name', 'ingredient__measurement_unit').annotate(
                     quantity=Sum('amount')
         )
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = ('attachment; '
-                                           'filename="shopping_list.pdf"')
-        return(get_shopping_cart(ingredients))
+
+        return (get_shopping_cart(ingredients))
 
 
 class CustomUserViewSet(UserViewSet):
