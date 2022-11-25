@@ -7,9 +7,9 @@ from reportlab.pdfgen import canvas
 def get_shopping_cart(ingredients):
     pdfmetrics.registerFont(
         TTFont('Lemon', 'data/Lemon.ttf', 'UTF-8'))
-    response = FileResponse(content_type='application/pdf')
-    response['Content-Disposition'] = ('attachment; '
-                                       'filename="shopping_list.pdf"')
+    response = FileResponse(open('shopping_list.pdf', 'rb'))
+    # response['Content-Disposition'] = ('attachment; '
+    #                                    'filename="shopping_list.pdf"')
     page = canvas.Canvas(response)
     page.setFont('Lemon', size=24)
     page.drawString(200, 800, 'Список покупок')
