@@ -228,44 +228,70 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             'cooking_time'
         )
 
-    def validate_ingredients(self, data):
+    def validate(self, data):
+
         ingredients = data['ingredients']
+
         ingredients_list = []
+
         for ingredient in ingredients:
+
             ingredient_id = ingredient['id']
+
             if ingredient_id in ingredients_list:
+
                 raise serializers.ValidationError({
+
                     'ingredients': 'Ингредиенты должны быть уникальными'
+
                 })
+
             ingredients_list.append(ingredient_id)
+
             amount = ingredient['amount']
+
             if int(amount) <= 0:
+
                 raise serializers.ValidationError({
+
                     'amount': 'Нужно добавить хотя-бы один ингредиент'
-                })
-        return data
 
-    def validate_tags(self, data):
+                })
+
         tags = data['tags']
-        if not tags:
-            raise serializers.ValidationError({
-                'tags': 'Нужно выбрать тэг'
-            })
-        tags_list = []
-        for tag in tags:
-            if tag in tags_list:
-                raise serializers.ValidationError({
-                    'tags': 'Тэги должны быть уникальны'
-                })
-            tags_list.append(tag)
-        return data
 
-    def validate_cooking_time(self, data):
-        cooking_time = data['cooking_time']
-        if int(cooking_time) <= 0:
+        if not tags:
+
             raise serializers.ValidationError({
-                'cooking_time': 'Время приготовления должно быть больше 0'
+
+                'tags': 'Нужно выбрать тэг'
+
             })
+
+        tags_list = []
+
+        for tag in tags:
+
+            if tag in tags_list:
+
+                raise serializers.ValidationError({
+
+                    'tags': 'Тэги должны быть уникальны'
+
+                })
+
+            tags_list.append(tag)
+
+        cooking_time = data['cooking_time']
+
+        if int(cooking_time) <= 0:
+
+            raise serializers.ValidationError({
+
+                'cooking_time': 'Время приготовления должно быть больше 0'
+
+            })
+
         return data
 
     @staticmethod
