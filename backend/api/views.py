@@ -1,11 +1,10 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
-from django.http import HttpResponse
+
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfgen import canvas
+
+from .utils.generate_pdf import get_shopping_cart
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -107,26 +106,7 @@ class RecipeViewSet(ModelViewSet):
                     quantity=Sum('amount')
         )
 
-        pdfmetrics.registerFont(
-            TTFont('Lemon', 'data/Lemon.ttf', 'UTF-8'))
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = ('attachment; '
-                                           'filename="shopping_list.pdf"')
-        page = canvas.Canvas(response)
-        page.setFont('Lemon', size=24)
-        page.drawString(200, 800, 'Список покупок')
-        page.setFont('Lemon', size=16)
-        height = 750
-        for value in ingredients:
-            page.drawString(75, height, (
-                value['ingredient__name'] + ' - '
-                + str(value['quantity']) + ' '
-                + value['ingredient__measurement_unit']
-            ))
-            height -= 25
-        page.showPage()
-        page.save()
-        return response
+        get_shopping_cart(ingredients)
 
 
 class CustomUserViewSet(UserViewSet):
