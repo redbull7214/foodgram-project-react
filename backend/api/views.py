@@ -108,7 +108,7 @@ class RecipeViewSet(ModelViewSet):
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = ('attachment; '
                                            'filename="shopping_list.pdf"')
-        get_shopping_cart(ingredients)
+        return(get_shopping_cart(ingredients))
 
 
 class CustomUserViewSet(UserViewSet):
