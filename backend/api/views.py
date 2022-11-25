@@ -20,7 +20,10 @@ from .serializers import (CustomUserSerializer, FollowSerializer,
                           IngredientSerializer, RecipeReadSerializer,
                           RecipeWriteSerializer, ShortRecipeSerializer,
                           TagSerializer)
-from .utils.generate_pdf import get_shopping_cart
+from django.http import HttpResponse
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen import canvas
 
 
 class TagsViewSet(ReadOnlyModelViewSet):
@@ -99,35 +102,15 @@ class RecipeViewSet(ModelViewSet):
             permission_classes=(IsAuthenticated, ))
     def download_shopping_cart(self, request):
 
-        final_list = {}
-
         ingredients = RecipeIngredient.objects.filter(
 
-            recipe__cart__user=request.user).values_list(
+            recipe__cart__user=request.user).values(
 
-            'ingredient__name', 'ingredient__measurement_unit',
+                'ingredient__name', 'ingredient__measurement_unit').annotate(
 
-            'amount'
+                    amount=Sum('amount')
 
         )
-
-        for item in ingredients:
-
-            name = item[0]
-
-            if name not in final_list:
-
-                final_list[name] = {
-
-                    'measurement_unit': item[1],
-
-                    'amount': item[2]
-
-                }
-
-            else:
-
-                final_list[name]['amount'] += item[2]
 
         pdfmetrics.registerFont(
 
@@ -149,11 +132,17 @@ class RecipeViewSet(ModelViewSet):
 
         height = 750
 
-        for i, (name, data) in enumerate(final_list.items(), 1):
+        for value in ingredients:
 
-            page.drawString(75, height, (f'{i}. {name} - {data["amount"]} '
+            page.drawString(75, height, (
 
-                                         f'{data["measurement_unit"]}'))
+                value['ingredient__name'] + ' - '
+
+                + str(value['amount']) + ' '
+
+                + value['ingredient__measurement_unit']
+
+            ))
 
             height -= 25
 
