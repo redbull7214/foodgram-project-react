@@ -1,5 +1,6 @@
 
 
+from pathlib import Path
 import os
 from dotenv import load_dotenv
 
@@ -105,7 +106,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
+static_path = Path('../docs')
+STATICFILES_DIRS = [
+    static_path,
+]
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
