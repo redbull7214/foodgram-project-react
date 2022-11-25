@@ -104,7 +104,7 @@ class RecipeViewSet(ModelViewSet):
         ingredients = RecipeIngredient.objects.filter(
             recipe__cart__user=request.user).values(
                 'ingredient__name', 'ingredient__measurement_unit').annotate(
-                    amount=Sum('amount')
+                    quantity=Sum('amount')
         )
 
         pdfmetrics.registerFont(
@@ -120,7 +120,7 @@ class RecipeViewSet(ModelViewSet):
         for value in ingredients:
             page.drawString(75, height, (
                 value['ingredient__name'] + ' - '
-                + str(value['amount']) + ' '
+                + str(value['quantity']) + ' '
                 + value['ingredient__measurement_unit']
             ))
             height -= 25
