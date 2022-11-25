@@ -243,6 +243,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                     'amount': 'Нужно добавить хотя-бы один ингредиент'
                 })
+        return data
 
     def validate_tags(self, data):
         tags = data['tags']
@@ -257,6 +258,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                     'tags': 'Тэги должны быть уникальны'
                 })
             tags_list.append(tag)
+        return data
 
     def validate_cooking_time(self, data):
         cooking_time = data['cooking_time']
