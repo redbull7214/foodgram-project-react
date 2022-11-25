@@ -5,12 +5,16 @@ from reportlab.pdfgen import canvas
 
 
 def get_shopping_cart(ingredients):
+    """
+    Функция для генерации pdf.
+    """
     pdfmetrics.registerFont(
         TTFont('Lemon', 'data/Lemon.ttf', 'UTF-8'))
-    response = FileResponse(open('shopping_list.pdf', 'rb'))
+
+    # response = HttpResponse(content_type='application/pdf')
     # response['Content-Disposition'] = ('attachment; '
     #                                    'filename="shopping_list.pdf"')
-    page = canvas.Canvas(response)
+    page = canvas.Canvas()
     page.setFont('Lemon', size=24)
     page.drawString(200, 800, 'Список покупок')
     page.setFont('Lemon', size=16)
@@ -24,4 +28,4 @@ def get_shopping_cart(ingredients):
         height -= 25
     page.showPage()
     page.save()
-    return response
+    return FileResponse(page, as_attachment=True, filename='shopping_list.pdf')
