@@ -41,7 +41,7 @@ class IngredientsViewSet(ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     permission_classes = (AdminOrReadOnly, )
     serializer_class = IngredientSerializer
-    filter_backends = [IngredientsSearchFilter]
+    filter_backends = (IngredientsSearchFilter, )
     search_fields = ('^name',)
 
 
@@ -50,8 +50,8 @@ class RecipeViewSet(ModelViewSet):
     Вьюсет для рецептов.
     """
     queryset = Recipe.objects.all()
-    permission_classes = [AuthorOrModeratorOrAdmin]
-    filter_backends = [DjangoFilterBackend]
+    permission_classes = (AuthorOrModeratorOrAdmin, )
+    filter_backends = (DjangoFilterBackend, )
     filterset_class = RecipeFilter
     pagination_class = LimitPageNumberPagination
 
@@ -98,13 +98,13 @@ class RecipeViewSet(ModelViewSet):
         return self.delete_from(Cart, request.user, pk)
 
     @action(detail=False, methods=['get'],
-            permission_classes=[IsAuthenticated])
+            permission_classes=(IsAuthenticated, ))
     def download_shopping_cart(self, request):
 
         ingredients = RecipeIngredient.objects.filter(
             recipe__cart__user=request.user).values(
                 'ingredient__name', 'ingredient__measurement_unit').annotate(
-                    amount=Sum('amount')
+                    quantity=Sum('amount')
         )
 
         pdfmetrics.registerFont(
@@ -120,7 +120,7 @@ class RecipeViewSet(ModelViewSet):
         for value in ingredients:
             page.drawString(75, height, (
                 value['ingredient__name'] + ' - '
-                + str(value['amount']) + ' '
+                + str(value['quantity']) + ' '
                 + value['ingredient__measurement_unit']
             ))
             height -= 25
@@ -135,7 +135,7 @@ class CustomUserViewSet(UserViewSet):
     """
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = (AllowAny, )
 
 
 class FollowViewSet(APIView):
@@ -143,7 +143,7 @@ class FollowViewSet(APIView):
     Вьюсет для подписок.
     """
     serializer_class = FollowSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated, )
     pagination_class = LimitPageNumberPagination
 
     def post(self, request, *args, **kwargs):
@@ -192,7 +192,7 @@ class FollowListView(ListAPIView):
     Вьюсет для отображения подписок.
     """
     serializer_class = FollowSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated, )
     pagination_class = LimitPageNumberPagination
 
     def get_queryset(self):
