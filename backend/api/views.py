@@ -83,7 +83,7 @@ class RecipeViewSet(ModelViewSet):
             obj.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response({'errors': 'Рецепт уже удален'},
-                        status=status.HTTP_400_BAD_REQUEST)
+                        status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=True,
@@ -162,7 +162,7 @@ class FollowViewSet(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(
             {'error': 'Вы не подписаны на этого пользователя'},
-            status=status.HTTP_400_BAD_REQUEST
+            status=status.HTTP_204_NO_CONTENT
         )
 
 
