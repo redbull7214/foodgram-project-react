@@ -14,7 +14,7 @@ def get_shopping_cart(ingredients):
     # response = HttpResponse(content_type='application/pdf')
     # response['Content-Disposition'] = ('attachment; '
     #                                    'filename="shopping_list.pdf"')
-    page = canvas.Canvas()
+    page = canvas.Canvas('shopping_list.pdf')
     page.setFont('Lemon', size=24)
     page.drawString(200, 800, 'Список покупок')
     page.setFont('Lemon', size=16)
