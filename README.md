@@ -42,6 +42,5 @@ docker-compose up -d
 ```
 ##### Документация для API доступна по адресу
 ```sh
-http://localhost/redoc/
-http://localhost/swagger/
+http://51.250.88.241/api/
 ```

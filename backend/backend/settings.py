@@ -1,6 +1,7 @@
 
 
 import os
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,7 +13,8 @@ SECRET_KEY = os.getenv(
 
 DEBUG = eval(os.getenv('DEBUG', default='True'))
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '51.250.88.241', 'backend', 'frontend', 'nginx', 'postgres']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '51.250.88.241',
+                 'backend', 'frontend', 'nginx', 'postgres']
 
 INSTALLED_APPS = [
     'django.contrib.admin',

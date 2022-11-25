@@ -1,26 +1,26 @@
-from rest_framework.generics import ListAPIView
-from rest_framework.views import APIView
+from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-
-from .utils.generate_pdf import get_shopping_cart
+from djoser.views import UserViewSet
+from recipes.models import (Cart, Favorite, Ingredient, Recipe,
+                            RecipeIngredient, Tag)
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-from djoser.views import UserViewSet
-from recipes.models import (Favorite, Ingredient, RecipeIngredient, Recipe,
-                            Cart, Tag)
 from users.models import Follow, User
+
 from .filters import IngredientsSearchFilter, RecipeFilter
 from .pagination import LimitPageNumberPagination
 from .permissions import AdminOrReadOnly, AuthorOrModeratorOrAdmin
-from .serializers import (IngredientSerializer,
-                          RecipeReadSerializer, RecipeWriteSerializer,
-                          TagSerializer, FollowSerializer,
-                          CustomUserSerializer, ShortRecipeSerializer)
-from django.db.models import Sum
+from .serializers import (CustomUserSerializer, FollowSerializer,
+                          IngredientSerializer, RecipeReadSerializer,
+                          RecipeWriteSerializer, ShortRecipeSerializer,
+                          TagSerializer)
+from .utils.generate_pdf import get_shopping_cart
 
 
 class TagsViewSet(ReadOnlyModelViewSet):
