@@ -3,12 +3,13 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 
+
 def get_shopping_cart(ingredients):
     pdfmetrics.registerFont(
         TTFont('Lemon', 'data/Lemon.ttf', 'UTF-8'))
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = ('attachment; '
-                                    'filename="shopping_list.pdf"')
+                                       'filename="shopping_list.pdf"')
     page = canvas.Canvas(response)
     page.setFont('Lemon', size=24)
     page.drawString(200, 800, 'Список покупок')
