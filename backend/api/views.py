@@ -20,10 +20,7 @@ from .serializers import (CustomUserSerializer, FollowSerializer,
                           IngredientSerializer, RecipeReadSerializer,
                           RecipeWriteSerializer, ShortRecipeSerializer,
                           TagSerializer)
-from django.http import HttpResponse
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfgen import canvas
+from .utils.generate_pdf import get_shopping_cart
 
 
 class TagsViewSet(ReadOnlyModelViewSet):
@@ -101,56 +98,12 @@ class RecipeViewSet(ModelViewSet):
     @action(detail=False, methods=['get'],
             permission_classes=(IsAuthenticated, ))
     def download_shopping_cart(self, request):
-
         ingredients = RecipeIngredient.objects.filter(
-
             recipe__cart__user=request.user).values(
-
                 'ingredient__name', 'ingredient__measurement_unit').annotate(
-
                     amount=Sum('amount')
-
         )
-
-        pdfmetrics.registerFont(
-
-            TTFont('Lemon', 'data/Lemon.ttf', 'UTF-8'))
-
-        response = HttpResponse(content_type='application/pdf')
-
-        response['Content-Disposition'] = ('attachment; '
-
-                                           'filename="shopping_list.pdf"')
-
-        page = canvas.Canvas(response)
-
-        page.setFont('Lemon', size=24)
-
-        page.drawString(200, 800, 'Список покупок')
-
-        page.setFont('Lemon', size=16)
-
-        height = 750
-
-        for value in ingredients:
-
-            page.drawString(75, height, (
-
-                value['ingredient__name'] + ' - '
-
-                + str(value['amount']) + ' '
-
-                + value['ingredient__measurement_unit']
-
-            ))
-
-            height -= 25
-
-        page.showPage()
-
-        page.save()
-
-        return response
+        return (get_shopping_cart(ingredients))
 
 
 class CustomUserViewSet(UserViewSet):
