@@ -14,6 +14,8 @@
 
 ### Проект доступен по адресу:
 http://51.250.88.241/
+### Документация к проекту:
+http://51.250.88.241/api/docs/
 ### Стек технологий
 Python 3.8.10, Django 4.0.2, Django REST Framework 3.13.1, PostgresQL, Docker, Yandex.Cloud, Nginx, 
 ## _Как запустить проект:_
@@ -39,8 +41,4 @@ python manage.py migrate
 Перейти в папку infra и выполнить команду
 ```sh
 docker-compose up -d
-```
-##### Документация для API доступна по адресу
-```sh
-http://51.250.88.241/api/
 ```
