@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'api',
     'users',
     'recipes',
-    'rest_framework_swagger',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
