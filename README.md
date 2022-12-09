@@ -21,7 +21,7 @@ Python 3.8.10, Django 4.0.2, Django REST Framework 3.13.1, PostgresQL, Docker, Y
 ## _Как запустить проект:_
 Клонировать репозиторий и перейти в него в командной строке:
 ```sh
-https://github.com/redbull7214/foodgram-project-react
+git clone https://github.com/redbull7214/foodgram-project-react
 ```
 Создать виртуальное окружение, обновить pip
 ```sh
